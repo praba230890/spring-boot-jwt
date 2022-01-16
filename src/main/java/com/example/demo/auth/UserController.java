@@ -33,38 +33,38 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/users")
+    @GetMapping("/v1/users")
     public ResponseEntity<List<User>> getUsers() {
         return ResponseEntity.ok(userService.getUsers());
     }
 
-    @PostMapping("/users")
+    @PostMapping("/v1/users")
     public ResponseEntity<User> saveUser(@RequestBody User user) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         URI uri = URI.create(ServletUriComponentsBuilder.fromContextPath(request).path("/api/v1/users/").toUriString());
         return ResponseEntity.created(uri).body(userService.saveUser(user));
     }
 
-    @PostMapping("/roles")
+    @PostMapping("/v1/roles")
     public ResponseEntity<Role> saveUser(@RequestBody Role role) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         URI uri = URI.create(ServletUriComponentsBuilder.fromContextPath(request).path("/api/v1/roles/").toUriString());
         return ResponseEntity.created(uri).body(userService.saveRole(role));
     }
 
-    @PostMapping("/roles/addtouser")
+    @PostMapping("/v1/roles/addtouser")
     public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form) {
         userService.addRoleToUser(form.getUsername(), form.getRoleName());
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/refreshtoken")
+    @PostMapping("/token/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String refresh_token = request.getHeader(HttpHeaders.AUTHORIZATION);
                 log.info("refresh_token: {}", refresh_token);
